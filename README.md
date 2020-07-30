@@ -19,10 +19,10 @@ Il est assumé que :
 Avant de continuer, il faut être en possession des informations suivantes :
 
 * Un compte utilisateur capable d'administrer le serveur (faisant partie du groupe sudo)
-* Le nom de l'interface connectée au réseau local englobant (réseau de l'école ou de la maison)
-* Le nom de l'interface connectée au réseau local de LTSP
+* Le nom de l'interface connectée au réseau local (réseau de l'école ou de la maison)
+* Le nom de l'interface connectée au réseau LTSP
 
-Il est important de ne pas se déplacer manuellement dans les répertoire entre le lancement des scripts.
+Les scripts sont conçus pour être lancés par un utilisateur sudoer mais **pas directement par root**.
 
 
 
@@ -32,11 +32,11 @@ Il est important de ne pas se déplacer manuellement dans les répertoire entre 
 
 Lancer le script `01.setup_server.sh`. Il installe les paquets principaux, configure les interfaces réseau, ajoute les règles iptables, génère le chroot, ajoute les groupes du système et génère le skeleton étudiant.
 
-* Répondre **`Yes`** deux fois lors de la configuration de `iptables-persistent`
+* Répondre `Yes` deux fois lors de la configuration de `iptables-persistent`
 
 
 
-#### Étape 2 : installation de Mitmproxy
+#### Étape 2 : installation de Mitmproxy et Wireshark
 
 Lancer le script `02.install_mitmproxy.sh`. Il télécharge les exécutables Mitmproxy.
 
@@ -46,25 +46,27 @@ Une fois l'exécution terminée, lancer l'exécutable `mitmproxy` pour générer
 $ sudo ./mitmproxy
 ```
 
-Continuer l'installation en lançant le script `03.setup_mitmproxy`
+Revenir au dossier contenant les scripts et continuer l'installation en lançant le script `03.setup_mitmproxy`. Ce script configure Mitmproxy et installe Wireshark.
 
-WIRESHARK ??
+* Répondre `Yes` lorsque Wireshark demande si les non-superutilisateurs peuvent capturer des packets.
 
+Une fois l'exécution terminée, fermer le terminal et le rouvrir pour appliquer les nouvelles variables d'environneme
 
+Lancer Wireshark, ouvrir le menu *Edit* > *Preferences* > *Protocols* > *TLS* puis ajouter le chemin `/opt/mitmproxy/sslkeylogfile.txt` dans le champs *(Pre)-Master-Secret log filename*.
 
 #### Étape 3 : installation du chroot
 
 Lancer le script `04.install_chroot.sh`. Il entre dans le chroot, télécharge les paquets nécessaires au client, installe le certificat proxy et met en place les configurations de l'environnement.
 
 * Garder l'encodage par défaut lors de l'upgrade des paquets
-* Répondre **<Yes>** deux fois lors de la configuration de `iptables-persistent`
+* Répondre `Yes` deux fois lors de la configuration de `iptables-persistent`
 * Ne pas installer GRUB lors de l'installation de `ubuntu-desktop`
 
 
 
 #### Étape 4 : installation de Logkeys dans le chroot
 
-Lancer le script `05.install_chroot_logkeys.sh`. Il installe le keylogger Logkeys dans le chroot et le configure pour qu'il s'exécute seulement pendant une session.
+Lancer le script `05.install_chroot_logkeys.sh`. Il installe le keylogger Logkeys dans le chroot et le configure pour qu'il s'exécute seulement pendant des sessions ouvertes.
 
 
 
@@ -199,9 +201,9 @@ disable-user-list=true
 Créer quelques utilisateurs étudiants en utilisant le script `create-users.sh` :
 
 ```bash
-# Create script create-users.sh (owned by the current user)
+# Copy script create-users.sh (owned by the current user)
 $ sudo chmod u+x create-users.sh
-$ printf "luke_skywalker\nhan_solo\n" > users
+$ printf "luke_skywalker\nhan_solo\nleia_organa\nsheev_palpatine\n" > users
 $ sudo ./create-users.sh users
 $ cat users-output.txt
 ```
@@ -241,4 +243,4 @@ Il est possible que certains problèmes apparaîssent malgré le suivi scrupuleu
 * Si les clients ne parviennent pas à se connecter au serveur TFTP, voir les logs de dnsmasq. Il suffit parfois de redémarrer le service.
 * Si une interface semble DOWN, vérifier les configurations netplan et réappliquer si nécessaire.
 * Si le serveur Zabbix apparaît "Down" dans la console, vérifier les logs dans `/var/log/zabbix/zabbix_agentd.log` et `/var/log/zabbix/zabbix_server.log`. Il peut arriver que le serveur communique avec son propre agent non pas avec l'adresse 127.0.0.1 mais avec l'adresse d'une autre interface. Si c'est le cas, il faut modifier les clés `Server` et `ServerActive` dans la configuration de l'agent pour les faire correspondre avec l'IP utilisée.
-* Si l'agent Zabbix sur les clients ne démarre pas, vérifier le owner du dossier `/var/log/zabbix`. Il arrive que ce fichier change de propriétaire sans raison. Cela devrait être `zabbix:zabbix`.
+* Si l'agent Zabbix sur les clients ne démarre pas, vérifier le owner du dossier `/var/log/zabbix`. Il arrive que ce fichier change de propriétaire sans raison apparente. Cela devrait être `zabbix:zabbix`.

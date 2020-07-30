@@ -139,13 +139,14 @@ $ schroot -c bionic -u root ./07.install_chroot_zabbix.sh
 
 Il installe l'agent Zabbix dans le chroot et donne les permissions nécessaires à son fonctionnement.
 
-Une fois l'exécution terminée, ouvrir le fichier `/etc/zabbix/zabbix_agentd.conf` et modifier les valeurs des clés suivantes pour qu'elles soient exactement comme suit :
+Une fois l'exécution terminée, exécuter cette commande :
 
 ```bash
 $ schroot -c bionic -u root nano /etc/zabbix/zabbix_agentd.conf
 ```
+Puis modifier les valeurs des clés suivantes pour qu'elles soient exactement comme suit :
 
-```
+```bash
 Server=192.168.67.1
 ServerActive=192.168.67.1
 #Hostname=Zabbix server
@@ -217,11 +218,10 @@ disable-user-list=true
 
 #### Étape 8 : création de l'image cliente LTSP
 
-Créer quelques utilisateurs étudiants en utilisant le script `create-users.sh` :
+De retour sur le serveur, créer quelques utilisateurs étudiants en utilisant le script `create-users.sh` :
 
 ```bash
 # Copy script create-users.sh (owned by the current user)
-$ sudo chmod u+x create-users.sh
 $ printf "luke_skywalker\nhan_solo\nleia_organa\nsheev_palpatine\n" > users
 $ sudo ./create-users.sh users
 $ cat users-output.txt

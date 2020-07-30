@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>5.0</version>
+    <date>2020-07-30T09:55:00Z</date>
+    <groups>
+        <group>
+            <name>LTSP clients</name>
+        </group>
+        <group>
+            <name>LTSP server</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Template LTSP clients</template>
+            <name>Template LTSP clients</name>
+            <groups>
+                <group>
+                    <name>LTSP clients</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>Checksum</name>
+                </application>
+                <application>
+                    <name>General</name>
+                </application>
+                <application>
+                    <name>Log monitoring</name>
+                </application>
+                <application>
+                    <name>Monitoring</name>
+                </application>
+                <application>
+                    <name>Status</name>
+                </application>
+            </applications>
+            <items>
+                <item>
+                    <name>Zabbix agent ping</name>
+                    <key>agent.ping</key>
+                    <history>7d</history>
+                    <trends>0</trends>
+                    <applications>
+                        <application>
+                            <name>Monitoring</name>
+                        </application>
+                    </applications>
+                    <valuemap>
+                        <name>Zabbix agent ping status</name>
+                    </valuemap>
+                    <triggers>
+                        <trigger>
+                            <expression>{nodata(180)}&lt;&gt;0</expression>
+                            <name>{HOST.NAME} is not available (for 3min)</name>
+                            <priority>WARNING</priority>
+                            <manual_close>YES</manual_close>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Keyboard logs</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>log[/var/log/logkeys.log]</key>
+                    <history>7d</history>
+                    <trends>0</trends>
+                    <value_type>LOG</value_type>
+                    <applications>
+                        <application>
+                            <name>Log monitoring</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Removable disk attachment</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>log[/var/log/syslog,Attached SCSI removable disk]</key>
+                    <history>7d</history>
+                    <trends>0</trends>
+                    <value_type>LOG</value_type>
+                    <applications>
+                        <application>
+                            <name>Log monitoring</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{strlen()}&gt;0</expression>
+                            <correlation_mode>TAG_VALUE</correlation_mode>
+                            <correlation_tag>Host</correlation_tag>
+                            <name>A SCSI removable disk has been attached on {HOST.NAME}</name>
+                            <priority>INFO</priority>
+                            <type>MULTIPLE</type>
+                            <manual_close>YES</manual_close>
+                            <tags>
+                                <tag>
+                                    <tag>Host</tag>
+                                    <value>{HOST.NAME}</value>
+                                </tag>
+                            </tags>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Iptables checksum</name>
+                    <key>net.iptables.cksum</key>
+                    <history>7d</history>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <applications>
+                        <application>
+                            <name>Checksum</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{diff()}&lt;&gt;0</expression>
+                            <recovery_mode>NONE</recovery_mode>
+                            <name>Iptables settings have changed on {HOST.NAME}</name>
+                            <priority>WARNING</priority>
+                            <manual_close>YES</manual_close>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Process list</name>
+                    <key>proc.list</key>
+                    <history>7d</history>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <applications>
+                        <application>
+                            <name>General</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>System uptime</name>
+                    <key>system.uptime</key>
+                    <history>7d</history>
+                    <trends>0</trends>
+                    <units>uptime</units>
+                    <description>System uptime in 'N days, hh:mm:ss' format.</description>
+                    <applications>
+                        <application>
+                            <name>Status</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{last()}&lt;2m</expression>
+                            <name>{HOST.NAME} has been restarted</name>
+                            <priority>WARNING</priority>
+                            <description>The host uptime is less than 10 minutes</description>
+                            <manual_close>YES</manual_close>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Logged user</name>
+                    <key>system.users.name</key>
+                    <history>7d</history>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <applications>
+                        <application>
+                            <name>General</name>
+                        </application>
+                    </applications>
+                </item>
+            </items>
+        </template>
+        <template>
+            <template>Template LTSP server</template>
+            <name>Template LTSP server</name>
+            <groups>
+                <group>
+                    <name>LTSP server</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>Authentication</name>
+                </application>
+                <application>
+                    <name>Checksum</name>
+                </application>
+                <application>
+                    <name>Security</name>
+                </application>
+            </applications>
+            <items>
+                <item>
+                    <name>User login</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>log[/var/log/syslog,Created slice User Slice of]</key>
+                    <delay>10s</delay>
+                    <history>7d</history>
+                    <trends>0</trends>
+                    <value_type>LOG</value_type>
+                    <applications>
+                        <application>
+                            <name>Authentication</name>
+                        </application>
+                    </applications>
+                    <preprocessing>
+                        <step>
+                            <type>REGEX</type>
+                            <params>(?&lt;=Slice of\s).+_.+[^\.]
+\0</params>
+                        </step>
+                    </preprocessing>
+                    <triggers>
+                        <trigger>
+                            <expression>{strlen()}&gt;0</expression>
+                            <recovery_mode>NONE</recovery_mode>
+                            <name>LOGIN : {ITEM.VALUE}</name>
+                            <priority>INFO</priority>
+                            <type>MULTIPLE</type>
+                            <manual_close>YES</manual_close>
+                            <tags>
+                                <tag>
+                                    <tag>Login</tag>
+                                    <value>{ITEM.VALUE}</value>
+                                </tag>
+                            </tags>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>User logout</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>log[/var/log/syslog,Removed slice User Slice of]</key>
+                    <delay>10s</delay>
+                    <history>7d</history>
+                    <trends>0</trends>
+                    <value_type>LOG</value_type>
+                    <applications>
+                        <application>
+                            <name>Authentication</name>
+                        </application>
+                    </applications>
+                    <preprocessing>
+                        <step>
+                            <type>REGEX</type>
+                            <params>(?&lt;=Slice of\s).+_.+[^\.]
+\0</params>
+                            <error_handler>CUSTOM_VALUE</error_handler>
+                            <error_handler_params>unknown</error_handler_params>
+                        </step>
+                    </preprocessing>
+                    <triggers>
+                        <trigger>
+                            <expression>{strlen()}&gt;0</expression>
+                            <recovery_mode>NONE</recovery_mode>
+                            <name>LOGOUT : {ITEM.VALUE}</name>
+                            <priority>INFO</priority>
+                            <type>MULTIPLE</type>
+                            <manual_close>YES</manual_close>
+                            <tags>
+                                <tag>
+                                    <tag>Logout</tag>
+                                    <value>{ITEM.VALUE}</value>
+                                </tag>
+                            </tags>
+                        </trigger>
+                    </triggers>
+                </item>
+            </items>
+            <discovery_rules>
+                <discovery_rule>
+                    <name>System proxy settings discovery</name>
+                    <type>EXTERNAL</type>
+                    <key>dconf_discovery.sh</key>
+                    <filter>
+                        <evaltype>AND</evaltype>
+                        <conditions>
+                            <condition>
+                                <macro>{#USER}</macro>
+                                <value>ltsp_monitoring</value>
+                                <operator>NOT_MATCHES_REGEX</operator>
+                                <formulaid>A</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#USER}</macro>
+                                <value>.+_.+</value>
+                                <formulaid>B</formulaid>
+                            </condition>
+                        </conditions>
+                    </filter>
+                    <lifetime>7d</lifetime>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Checksum of system proxy settings for user {#USER}</name>
+                            <key>vfs.file.cksum[/home/{#USER}/.monitoring/proxy_settings]</key>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <value_type>TEXT</value_type>
+                            <applications>
+                                <application>
+                                    <name>Checksum</name>
+                                </application>
+                            </applications>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{diff()}&lt;&gt;0</expression>
+                                    <recovery_mode>NONE</recovery_mode>
+                                    <name>System proxy settings changed for {#USER}</name>
+                                    <priority>WARNING</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                    <preprocessing>
+                        <step>
+                            <type>JAVASCRIPT</type>
+                            <params>var lld = [];
+var lines = value.split(&quot;\n&quot;);
+var lines_num = lines.length;
+for (i = 0; i &lt; lines_num; i++)
+{
+  var rows = lines[i].split(&quot; &quot;);
+  var row = {};
+  row[&quot;{#USER}&quot;] = rows[0];
+  row[&quot;{#DCONF}&quot;] = rows[1];
+  lld.push(row);
+}
+return JSON.stringify(lld);</params>
+                        </step>
+                    </preprocessing>
+                </discovery_rule>
+            </discovery_rules>
+        </template>
+    </templates>
+    <value_maps>
+        <value_map>
+            <name>Zabbix agent ping status</name>
+            <mappings>
+                <mapping>
+                    <value>1</value>
+                    <newvalue>Up</newvalue>
+                </mapping>
+            </mappings>
+        </value_map>
+    </value_maps>
+</zabbix_export>

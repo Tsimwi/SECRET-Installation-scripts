@@ -12,23 +12,28 @@ Ce document est une marche à suivre pour configurer le serveur LTSP.
 
 Il est assumé que :
 
-* Le serveur est fraîchement installé avec Ubuntu 18.04 Desktop 
+* Le serveur est fraîchement installé avec Ubuntu 18.04 Desktop (installation normale, pas minimale)
 * Les paramètres liés au pays et à la langue sont corrects (localisation `Europe/Zurich`, clavier `Switzerland - French`)
-* La topologie réseau est prête (le serveur est branché au réseau local par une interface et à au moins un client par une autre interface)
+* La topologie réseau est prête (le serveur est branché au réseau local par une interface et à au moins une autre interface disponible pour le réseau LTSP)
 
-Avant de continuer, il faut être en possession des informations suivantes :
+Avant de continuer, il faut être en possession de :
 
 * Un compte utilisateur capable d'administrer le serveur (faisant partie du groupe sudo)
 * Le nom de l'interface connectée au réseau local (réseau de l'école ou de la maison)
 * Le nom de l'interface connectée au réseau LTSP
 
-Les scripts sont conçus pour être lancés par un utilisateur sudoer mais **pas directement par root**.
+Les scripts sont conçus pour être lancés par un utilisateur sudoer depuis son /home, mais **pas directement par root**.
 
 
 
 #### Étape 1 : premiers paramétrages du serveur
 
-Éditer le fichier script `01.setup_server` pour remplacer les noms des interfaces et des adresses IP pour qu'elles correspondent à votre environnement. **Une balise `# *EDIT*` se trouve avant chaque option à éditer manuellement.**
+Éditer le fichier script `01.setup_server` pour remplacer les noms des interfaces et des adresses IP pour qu'elles correspondent à votre environnement. **Une balise `# *EDIT*` se trouve avant chaque option à éditer manuellement :**
+
+* Interface côté LTSP : nom et gateway
+* Interface côté réseau local : nom
+* Seconde règle iptables : nom de l'interface côté LTSP
+* Fichier de configuration du chroot : nom de l'utilisateur courant
 
 Lancer le script `01.setup_server.sh`. Il installe les paquets principaux, configure les interfaces réseau, ajoute les règles iptables, génère le chroot, ajoute les groupes du système et génère le skeleton étudiant.
 
@@ -43,20 +48,26 @@ Lancer le script `02.install_mitmproxy.sh`. Il télécharge les exécutables Mit
 Une fois l'exécution terminée, lancer l'exécutable `mitmproxy` pour générer ses certificats :
 
 ```bash
-$ sudo ./mitmproxy
+$ sudo /opt/mitmproxy/mitmproxy
 ```
 
-Revenir au dossier contenant les scripts et continuer l'installation en lançant le script `03.setup_mitmproxy`. Ce script configure Mitmproxy et installe Wireshark.
+Arrêter la capture avec CTRL+C. Continuer l'installation en lançant le script `03.setup_mitmproxy`. Ce script configure Mitmproxy et installe Wireshark.
 
 * Répondre `Yes` lorsque Wireshark demande si les non-superutilisateurs peuvent capturer des packets.
 
-Une fois l'exécution terminée, fermer le terminal et le rouvrir pour appliquer les nouvelles variables d'environneme
-
 Lancer Wireshark, ouvrir le menu *Edit* > *Preferences* > *Protocols* > *TLS* puis ajouter le chemin `/opt/mitmproxy/sslkeylogfile.txt` dans le champs *(Pre)-Master-Secret log filename*.
+
+
 
 #### Étape 3 : installation du chroot
 
-Lancer le script `04.install_chroot.sh`. Il entre dans le chroot, télécharge les paquets nécessaires au client, installe le certificat proxy et met en place les configurations de l'environnement.
+Lancer le script 04 avec la commande :
+
+```bash
+$ schroot -c bionic -u root ./04.install_chroot.sh
+```
+
+Il entre dans le chroot, télécharge les paquets nécessaires au client, installe le certificat proxy et met en place les configurations de l'environnement.
 
 * Garder l'encodage par défaut lors de l'upgrade des paquets
 * Répondre `Yes` deux fois lors de la configuration de `iptables-persistent`
@@ -66,7 +77,13 @@ Lancer le script `04.install_chroot.sh`. Il entre dans le chroot, télécharge l
 
 #### Étape 4 : installation de Logkeys dans le chroot
 
-Lancer le script `05.install_chroot_logkeys.sh`. Il installe le keylogger Logkeys dans le chroot et le configure pour qu'il s'exécute seulement pendant des sessions ouvertes.
+Lancer le script 05 avec la commande :
+
+```bash
+$ schroot -c bionic -u root ./05.install_logkeys.sh
+```
+
+Il installe le keylogger Logkeys dans le chroot et le configure.
 
 
 
@@ -114,9 +131,19 @@ $ sudo systemctl start zabbix-server zabbix-agent apache2
 
 #### Étape 6 : installation de l'agent Zabbix dans le chroot
 
-Lancer le script `07.install_chroot_zabbix.sh`. Il installe l'agent Zabbix dans le chroot et donne les permissions nécessaires à son fonctionnement.
+Lancer le script 07 avec la commande :
+
+```bash
+$ schroot -c bionic -u root ./07.install_chroot_zabbix.sh
+```
+
+Il installe l'agent Zabbix dans le chroot et donne les permissions nécessaires à son fonctionnement.
 
 Une fois l'exécution terminée, ouvrir le fichier `/etc/zabbix/zabbix_agentd.conf` et modifier les valeurs des clés suivantes pour qu'elles soient exactement comme suit :
+
+```bash
+$ schroot -c bionic -u root nano /etc/zabbix/zabbix_agentd.conf
+```
 
 ```
 Server=192.168.67.1
@@ -151,14 +178,6 @@ POST_INIT_CP_KEYS="cp /etc/ltsp/ssh_host_* /etc/ssh/"
 
 # Filter which users accounts are copied on the clients
 PWMERGE_SGR="^student$"
-```
-
-* Éditer le fichier `/etc/zabbix/zabbix_agentd.conf` et modifier les lignes suivantes :
-
-```
-Server=127.0.0.1
-ServerActive=127.0.0.1
-Hostname=Zabbix server
 ```
 
 * Éditer le fichier `/etc/gdm3/greeter.dconf-defaults` comme suit pour cacher la liste d'utilisateurs de la fenêtre de login :

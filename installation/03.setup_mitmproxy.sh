@@ -2,7 +2,6 @@
 ## Mitmproxy setup
 
 ## Move and install the .cer certificate on the server and inside the chroot
-cd
 sudo cp ~/.mitmproxy/mitmproxy-ca-cert.pem /usr/local/share/ca-certificates/mitmproxy-ca-cert.crt
 sudo cp ~/.mitmproxy/mitmproxy-ca-cert.pem /srv/ltsp/bionic/usr/local/share/ca-certificates/mitmproxy-ca-cert.crt
 
@@ -207,8 +206,9 @@ EOF
 
 ## Setup wireshark. Replace the user account `secretsecure` with the wanted one.
 sudo touch /opt/mitmproxy/sslkeylogfile.txt
-sudo tee -a /etc/environment > /dev/null << 'EOF'
 export SSLKEYLOGFILE="/opt/mitmproxy/sslkeylogfile.txt"
+sudo tee -a /etc/environment > /dev/null << 'EOF'
+SSLKEYLOGFILE="/opt/mitmproxy/sslkeylogfile.txt"
 EOF
 sudo add-apt-repository ppa:wireshark-dev/stable
 sudo apt update
@@ -220,4 +220,3 @@ sudo apt install wireshark -y
 # Set (Pre)-Master-Secret log filename = /opt/mitmproxy/sslkeylogfile.txt
 
 # Then run mitmdump -w /opt/mitmproxy/output-file -s /opt/mitmproxy/redirect_requests.py to start recording, and open the right interface on wireshark to see the traffic
-# read

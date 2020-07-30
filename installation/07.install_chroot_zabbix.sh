@@ -2,9 +2,6 @@
 # Zabbix agent installation
 # Install Zabbix agent inside the chroot (must then be allowed inside ltsp.conf)
 
-# Enter chroot
-schroot -c bionic -u root
-
 # Install Zabbix repository (the link may change according to the chosen database and web server)
 # https://www.zabbix.com/download?zabbix=5.0&os_distribution=ubuntu&os_version=20.04_focal&db=postgresql&ws=apache
 wget https://repo.zabbix.com/zabbix/5.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_5.0-1+bionic_all.deb
@@ -33,6 +30,3 @@ EOF
 touch /var/log/logkeys.log
 chown root:zabbix /var/log/logkeys.log
 chmod o-r /var/log/logkeys.log
-
-# Leave chroot
-exit

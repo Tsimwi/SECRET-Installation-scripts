@@ -44,6 +44,3 @@ cat > /etc/gdm3/PostSession/Default << 'EOF'
 /usr/local/bin/logkeys --kill
 exit 0
 EOF
-
-# Leave chroot
-exit

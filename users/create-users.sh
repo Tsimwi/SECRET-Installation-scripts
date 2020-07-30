@@ -40,3 +40,4 @@ if [ -f $list ]; then
 else
         echo "Error: parameter must be a file."
 fi
+

@@ -15,7 +15,7 @@ sudo apt install debootstrap schroot pwgen -y
 
 # *EDIT*
 # Configure clients' side network interface.
-# Replace interface name (eno1) and gateway with wanted values
+# Replace interface name (eno1) and gateway4 with wanted values
 sudo tee /etc/netplan/02_config_ltsp.yaml > /dev/null << 'EOF'
 network:
   version: 2
@@ -25,7 +25,7 @@ network:
       addresses:
         - 192.168.67.1/24
       gateway4: 192.168.1.1
-	  nameservers:
+      nameservers:
         addresses: [192.168.67.1]
 EOF
 # *EDIT*
@@ -47,7 +47,7 @@ sudo ltsp dnsmasq --proxy-dhcp=0
 # Apply iptables rules. Replace `-o interface` (ens38) in the first rule with wanted interface (the one facing ltsp clients)
 # Port 5432 is for postgresql, 10051 for zabbix
 sudo iptables -A OUTPUT -p tcp -d 127.0.0.1 -j ACCEPT
-sudo iptables -A OUTPUT -s 192.168.67.1 -o ens38 -j ACCEPT
+sudo iptables -A OUTPUT -s 192.168.67.1 -o eno1 -j ACCEPT
 sudo iptables -A OUTPUT -d 192.168.67.1 -j ACCEPT
 sudo iptables -A OUTPUT -p tcp --dport 22 -s 192.168.67.1 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
 sudo iptables -A OUTPUT -p tcp --dport 80 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
@@ -59,7 +59,7 @@ sudo iptables -A OUTPUT -m conntrack --ctstate ESTABLISHED -j ACCEPT
 sudo iptables -P OUTPUT DROP
 
 # Install package to save iptables rules automatically. During installation, accept the prompts twice
-sudo apt install iptables-persistent
+sudo apt install iptables-persistent -y
 
 # *EDIT*
 # Configure chroot configuration file
@@ -126,7 +126,3 @@ Match Group *,!sudo,!root,!professor,!assistant
     ForceCommand internal-sftp -d %u
 Match all
 EOF
-
-
-
-

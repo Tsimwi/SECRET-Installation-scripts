@@ -1,8 +1,6 @@
 #!/bin/bash
 # Chrooted environment configuration
-
-# Enter chroot
-schroot -c bionic -u root
+# This script must be called from inside the chroot
 
 # Fill apt sources list
 cat > /etc/apt/sources.list << 'EOF'

@@ -8,3 +8,4 @@ sudo ltsp image bionic
 sudo ltsp ipxe
 sudo ltsp nfs
 sudo ltsp initrd
+

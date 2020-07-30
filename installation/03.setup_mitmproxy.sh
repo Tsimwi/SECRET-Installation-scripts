@@ -210,7 +210,7 @@ export SSLKEYLOGFILE="/opt/mitmproxy/sslkeylogfile.txt"
 sudo tee -a /etc/environment > /dev/null << 'EOF'
 SSLKEYLOGFILE="/opt/mitmproxy/sslkeylogfile.txt"
 EOF
-sudo add-apt-repository ppa:wireshark-dev/stable
+sudo add-apt-repository ppa:wireshark-dev/stable -y
 sudo apt update
 # answer `yes` when asked if non-superusers should be able to capture packets
 sudo apt install wireshark -y

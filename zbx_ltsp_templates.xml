@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>5.0</version>
-    <date>2020-07-30T09:55:00Z</date>
+    <date>2020-07-30T11:39:06Z</date>
     <groups>
         <group>
             <name>LTSP clients</name>
@@ -246,8 +246,6 @@
                             <type>REGEX</type>
                             <params>(?&lt;=Slice of\s).+_.+[^\.]
 \0</params>
-                            <error_handler>CUSTOM_VALUE</error_handler>
-                            <error_handler_params>unknown</error_handler_params>
                         </step>
                     </preprocessing>
                     <triggers>

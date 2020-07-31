@@ -72,3 +72,8 @@ cat > /usr/lib/firefox/distribution/policies.json << 'EOF'
     }
 }
 EOF
+
+# Grant professor sudo permission
+cat > /etc/sudoers.d/ltsp_roles << 'EOF'
+%professor	ALL=(ALL:ALL) ALL
+EOF

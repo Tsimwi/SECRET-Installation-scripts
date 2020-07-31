@@ -2,19 +2,31 @@
 
 > Travail de Bachelor 2019-2020
 >
-> Caroline Monthoux
+> Auteur : Caroline Monthoux
+>
+> Date : 31.07.2020
 
 
+
+## Introduction
+
+Ce document est une marche à suivre pour configurer l'environnement tel que mis en place dans le projet.
+
+L'arborescence de dossiers est la suivante :
+
+* `installation/` contient tous les scripts d'installation de l'environnement
+* `users/` contient le script de création des utilisateurs
+* `import/` contient le fichier de configuration à importer dans Zabbix à l'étape 9.
+
+**Ce document ainsi que les scripts qui l'accompagnent sont disponibles dans un dépôt GitHub privé. Si vous préférez pouvoir tout cloner, n'hésitez pas à me transmettre votre nom d'utilisateur à mon adresse caroline.monthoux@heig-vd.ch et je me ferai un plaisir de vous ajouter.**
 
 ## Procédure d'installation de l'environnement
 
-Ce document est une marche à suivre pour configurer le serveur LTSP.
-
-Il est assumé que :
+Avant de commencer, il est nécessaire de disposer d'au moins 2 ordinateurs, l'un faisant office de serveur et l'autre de client. Il est assumé que :
 
 * Le serveur est fraîchement installé avec Ubuntu 18.04 Desktop (installation normale, pas minimale)
 * Les paramètres liés au pays et à la langue sont corrects (localisation `Europe/Zurich`, clavier `Switzerland - French`)
-* La topologie réseau est prête (le serveur est branché au réseau local par une interface et à au moins une autre interface disponible pour le réseau LTSP)
+* La topologie réseau est prête (le serveur est branché au réseau local par une interface et au(x) client(s) par une autre interface)
 
 Avant de continuer, il faut être en possession de :
 
@@ -38,6 +50,12 @@ Les scripts sont conçus pour être lancés par un utilisateur sudoer depuis son
 Lancer le script `01.setup_server.sh`. Il installe les paquets principaux, configure les interfaces réseau, ajoute les règles iptables, génère le chroot, ajoute les groupes du système et génère le skeleton étudiant.
 
 * Répondre `Yes` deux fois lors de la configuration de `iptables-persistent`
+
+Attribuer un mot de passe au compte `ltsp_monitoring` qui va servir à l'enseignant à se connecter aux clients.
+
+```bash
+$ sudo passwd ltsp_monitoring
+```
 
 
 
@@ -233,7 +251,7 @@ Lancer le script `08.image.sh`. Il génère l'image, le menu iPXE et le fichier 
 
 #### Étape 9 : configuration de Zabbix Frontend & Server
 
-Suivre la procédure `Importation de la configuration Zabbix.pdf` pour terminer l'installation de Zabbix sur le serveur.
+Suivre la procédure `Annexe A - Importation configuration Zabbix.pdf` pour terminer l'installation de Zabbix sur le serveur.
 
 
 
@@ -253,6 +271,8 @@ $ sudo ./mitmdump -s pretty_print.py -r output
 Une fois un client démarré, son agent devrait s'inscrire tout seul dans les Hosts Zabbix et être monitoré.
 
 **Un compte `ltsp_monitoring` possédant les droits sudo existe expressément pour pouvoir se connecter aux clients et y effectuer des actions privilégiées.** N'hésitez pas à l'utiliser (avec ssh ou en se connectant directement sur le client).
+
+L'annexe `Annexe B - Gestion d'une image.pdf` est disponible dans les annexe. Elle montre comment mettre à jour manuellement l'image et créer d'autres utilisateurs.
 
 #### Troubleshooting
 

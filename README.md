@@ -36,7 +36,7 @@ Les scripts sont conçus pour être lancés par un utilisateur sudoer depuis son
 
 
 
-#### Étape 1 : premiers paramétrages du serveur
+### Étape 1 : premiers paramétrages du serveur
 
 Éditer le fichier script `01.setup_server` pour remplacer les noms des interfaces et des adresses IP pour qu'elles correspondent à votre environnement. **Une balise `# *EDIT*` se trouve avant chaque option à éditer manuellement :**
 
@@ -57,7 +57,7 @@ $ sudo passwd ltsp_monitoring
 
 
 
-#### Étape 2 : installation de Mitmproxy et Wireshark
+### Étape 2 : installation de Mitmproxy et Wireshark
 
 Lancer le script `02.install_mitmproxy.sh`. Il télécharge les exécutables Mitmproxy.
 
@@ -75,7 +75,7 @@ Lancer Wireshark, ouvrir le menu *Edit* > *Preferences* > *Protocols* > *TLS* pu
 
 
 
-#### Étape 3 : installation du chroot
+### Étape 3 : installation du chroot
 
 Lancer le script 04 avec la commande :
 
@@ -91,7 +91,7 @@ Il entre dans le chroot, télécharge les paquets nécessaires au client, instal
 
 
 
-#### Étape 4 : installation de Logkeys dans le chroot
+### Étape 4 : installation de Logkeys dans le chroot
 
 Lancer le script 05 avec la commande :
 
@@ -103,7 +103,7 @@ Il installe le keylogger Logkeys dans le chroot et le configure.
 
 
 
-#### Étape 5 : installation du serveur, agent et frontend Zabbix
+### Étape 5 : installation du serveur, agent et frontend Zabbix
 
 Lancer le script `06.install_zabbix`. Il installe les composants nécessaires à Zabbix sur le serveur, dont la base de données PostgreSQL et Apache.
 
@@ -145,7 +145,7 @@ $ sudo systemctl start zabbix-server zabbix-agent apache2
 
 
 
-#### Étape 6 : installation de l'agent Zabbix dans le chroot
+### Étape 6 : installation de l'agent Zabbix dans le chroot
 
 Lancer le script 07 avec la commande :
 
@@ -171,9 +171,9 @@ HostnameItem=system.hostname
 
 
 
-#### Étape 7 : configurations manuelles
+### Étape 7 : configurations manuelles
 
-##### 7.1 Sur le serveur :
+#### 7.1 Sur le serveur :
 
 * Éditer le fichier `/etc/ltsp/ltsp.conf` et ajouter les lignes suivantes **sous les balises correspondantes** :
 
@@ -208,7 +208,7 @@ disable-user-list=true
 
 
 
-##### 7.2 Dans le chroot :
+#### 7.2 Dans le chroot :
 
 Entrer dans le schroot avec la commande :
 
@@ -233,7 +233,7 @@ disable-user-list=true
 
 
 
-#### Étape 8 : création de l'image cliente LTSP
+### Étape 8 : création de l'image cliente LTSP
 
 De retour sur le serveur, créer quelques utilisateurs étudiants en utilisant le script `create-users.sh` :
 
@@ -248,13 +248,13 @@ Lancer le script `08.image.sh`. Il génère l'image, le menu iPXE et le fichier 
 
 
 
-#### Étape 9 : configuration de Zabbix Frontend & Server
+### Étape 9 : configuration de Zabbix Frontend & Server
 
 Suivre la procédure `Annexe A - Importation configuration Zabbix.pdf` pour terminer l'installation de Zabbix sur le serveur.
 
 
 
-#### Étape 10 : tester l'environnement
+### Étape 10 : tester l'environnement
 
 Dès à présent, il devrait être possible de démarrer des clients LTSP.
 
@@ -275,7 +275,7 @@ L'annexe `Annexe B - Gestion d'une image.pdf` est disponible dans les annexe. El
 
 
 
-#### Troubleshooting
+### Troubleshooting
 
 Il est possible que certains problèmes apparaîssent malgré le suivi scrupuleux de la procédure :
 

@@ -18,8 +18,6 @@ L'arborescence de dossiers est la suivante :
 * `users/` contient le script de création des utilisateurs
 * `import/` contient le fichier de configuration à importer dans Zabbix à l'étape 9.
 
-**Ce document ainsi que les scripts qui l'accompagnent sont disponibles dans un dépôt GitHub privé. Si vous préférez pouvoir tout cloner, n'hésitez pas à me transmettre votre nom d'utilisateur à mon adresse caroline.monthoux@heig-vd.ch et je me ferai un plaisir de vous ajouter.**
-
 ## Procédure d'installation de l'environnement
 
 Avant de commencer, il est nécessaire de disposer d'au moins 2 ordinateurs, l'un faisant office de serveur et l'autre de client. Il est assumé que :
@@ -197,6 +195,7 @@ POST_INIT_CP_KEYS="cp /etc/ltsp/ssh_host_* /etc/ssh/"
 
 # Filter which users accounts are copied on the clients
 PWMERGE_SGR="^student$"
+PWMERGE_SUR="ltsp_monitoring"
 ```
 
 * Éditer le fichier `/etc/gdm3/greeter.dconf-defaults` comme suit pour cacher la liste d'utilisateurs de la fenêtre de login :
@@ -273,6 +272,8 @@ Une fois un client démarré, son agent devrait s'inscrire tout seul dans les Ho
 **Un compte `ltsp_monitoring` possédant les droits sudo existe expressément pour pouvoir se connecter aux clients et y effectuer des actions privilégiées.** N'hésitez pas à l'utiliser (avec ssh ou en se connectant directement sur le client).
 
 L'annexe `Annexe B - Gestion d'une image.pdf` est disponible dans les annexe. Elle montre comment mettre à jour manuellement l'image et créer d'autres utilisateurs.
+
+
 
 #### Troubleshooting
 

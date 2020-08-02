@@ -17,6 +17,7 @@ L'arborescence de dossiers est la suivante :
 * `installation/` contient tous les scripts d'installation de l'environnement
 * `users/` contient le script de création des utilisateurs
 * `import/` contient le fichier de configuration à importer dans Zabbix à l'étape 9.
+* `annexes/` contient les procédures annexes
 
 ## Procédure d'installation de l'environnement
 
